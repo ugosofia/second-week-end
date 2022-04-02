@@ -2,7 +2,7 @@ package restaurant;
 
 import lombok.*;
 
-@Data @Builder
+@Data @Builder @AllArgsConstructor
 public class Table {
 
     @Getter @Setter
