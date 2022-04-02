@@ -1,24 +1,16 @@
 package restaurant;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import lombok.*;
 
+@Data @Builder
 public class Table {
 
+    @Getter @Setter
     private int tableNum;
     private int capacity;
 
 
-    public void createT(Connection c) throws SQLException {
-        String sql = "CREATE TABLE table (tableNum INTEGER PRIMARY KEY , capacity INTEGER NOT NULL )";
-        PreparedStatement ps = c.prepareStatement(sql);
-        ps.executeUpdate();
 
-        ps.close();
-
-
-    }
 }
 
 
