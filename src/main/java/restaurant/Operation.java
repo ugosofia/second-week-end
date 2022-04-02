@@ -8,7 +8,7 @@ public interface Operation<K> {
     public boolean insert(K object);
     public void update(K object);
     public void delete(K object);
-    public List<K> select();
+    public List<K> select(int object);
     public void close();
 
 }

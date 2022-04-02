@@ -32,6 +32,25 @@ public class ReservationCRUD implements Operation<Reservation>{
     private String cognome;
 
 
+    public boolean richiestaPrenotazione(String cognome, Date data, int
+            numeroPersone, String cellulare) {
+
+        TableCRUD t = new TableCRUD();
+
+        int numeroTavoloDisponibile = t.disponibilitàTavolo(data, numeroPersone);
+        if((numeroTavoloDisponibile == 0))
+            return false;
+
+        Reservation reservation = new Reservation(cognome,data,numeroPersone,cellulare);
+        ReservedTables reservedTables = new ReservedTables(data, numeroTavoloDisponibile);
+
+        ReservationCRUD r = new ReservationCRUD();
+        r.insert(reservation);
+
+        reservedTables.insert(reservedTables);
+        return true;
+    }
+
     @Override
     public void createT() {
         try{
@@ -46,6 +65,14 @@ public class ReservationCRUD implements Operation<Reservation>{
 
     @Override
     public boolean insert(Reservation reservation) {
+
+        if(!(richiestaPrenotazione(reservation.getLastname(),
+                reservation.getDate(),reservation.getNPeople(),
+                reservation.getTNumber()))) {
+            L.err("ERRORE, non è possibile eseguire l'inserimento");
+            return false;
+        }
+
         String nTel, data;
         int persone, result = 0;
 
@@ -68,8 +95,10 @@ public class ReservationCRUD implements Operation<Reservation>{
         }
         close();
 
-        if(result != 0)
+        if(result != 0) {
+            L.info("Inserimento riuscito!");
             return true;
+        }
         return false;
     }
 
@@ -84,7 +113,7 @@ public class ReservationCRUD implements Operation<Reservation>{
     }
 
     @Override
-    public List<Reservation> select() {
+    public List<Reservation> select(int x) {
         List<Reservation> prenotazioni = new ArrayList<>();
         try {
             c = ConnectDB.connect();
