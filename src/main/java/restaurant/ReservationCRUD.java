@@ -29,6 +29,7 @@ public class ReservationCRUD implements Operation<Reservation>{
     public static final String RESERVATION_SELECT = "SELECT * FROM reservation WHERE lastname = ?";
     public static final String RESERVATION_UPDATE = "";
     public static final String RESERVATION_DELETE = "";
+    private String cognome;
 
 
     @Override
@@ -45,7 +46,7 @@ public class ReservationCRUD implements Operation<Reservation>{
 
     @Override
     public void insert() {
-        String cognome, nTel, data;
+        String nTel, data;
         int persone;
 
         try {
@@ -87,7 +88,6 @@ public class ReservationCRUD implements Operation<Reservation>{
 
     @Override
     public List<Reservation> select() {
-        String cognome;
         List<Reservation> prenotazioni = new ArrayList<>();
         try {
             c = ConnectDB.connect();

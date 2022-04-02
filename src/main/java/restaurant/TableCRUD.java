@@ -29,6 +29,7 @@ public class TableCRUD implements Operation<Table> {
     public static final String TABLE_UPDATE = "UPDATE `EXAMPLE`.`table`\n" +
             "SET `capacity` = ? WHERE `tableNum` = ?";
     public static final String TABLE_DELETE = "";
+    private int nTavolo, capacità;
 
 
     @Override
@@ -46,7 +47,6 @@ public class TableCRUD implements Operation<Table> {
 
     @Override
     public void insert() {
-        int nTavolo, capacità;
         try {
             c = ConnectDB.connect();
             ps = c.prepareStatement(TABLE_INSERT);
@@ -74,7 +74,6 @@ public class TableCRUD implements Operation<Table> {
 
     @Override
     public void update(Table object) {
-        int nTavolo, capacità;
         try {
             c = ConnectDB.connect();
             ps = c.prepareStatement(TABLE_UPDATE);
