@@ -25,3 +25,9 @@ hs_err_pid*
 .idea/
 .mvn/
 target/
+/src/main/resources/hibernate.cfg.xml
+/src/main/resources/hibernate.cfg.xml
+/src/main/resources/log4j.properties
+/src/main/resources/log4j.xml
+/src/main/resources/persistence.xml
+/src/main/resources/person.hbm.xml
