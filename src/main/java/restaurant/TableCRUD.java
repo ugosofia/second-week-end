@@ -4,10 +4,7 @@ import utils.ConnectDB;
 import utils.Logger;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -25,12 +22,40 @@ public class TableCRUD implements Operation<Table> {
             "  `capacity` INTEGER NOT NULL,\n" +
             "  PRIMARY KEY `tableNum`);";
     public static final String TABLE_INSERT = "INSERT INTO `EXAMPLE`.`table` (`tableNum`, `capacity`) VALUES (?, ?)";
-    public static final String TABLE_SELECT = "SELECT * FROM `EXAMPLE`.`table` WHERE `tableNum` >= ?";
+    public static final String TABLE_SELECT = "SELECT * FROM `EXAMPLE`.`table` WHERE `capacity` >= ?";
     public static final String TABLE_UPDATE = "UPDATE `EXAMPLE`.`table`\n" +
             "SET `capacity` = ? WHERE `tableNum` = ?";
     public static final String TABLE_DELETE = "";
     private int nTavolo, capacità;
 
+
+    public int disponibilitàTavolo(Date data, int numeroPersone) {
+     //   con il numero di persone, vado a prendere i numeri di tavoli con quella capienza
+        List<Table> tavoli = select(numeroPersone);
+        if(tavoli.isEmpty())
+            return 0;
+
+        // trovo i tavoli prenotati nella data passata come paramentro
+        ReservedTables reservedTables = new ReservedTables();
+        List<Integer> nTavoliPrenotati = reservedTables.select(data);
+        if(nTavoliPrenotati.isEmpty())
+            //non ci sono tavoli prenotati in quella data, prendo il primo tavolo della prima lista
+            return tavoli.get(0).getTableNum();
+
+        // confronto le due liste di tavoli, e trovo il tavolo diponibile
+        for (int i = 0; i < tavoli.size(); i++) {
+            for (int j = 0; j < nTavoliPrenotati.size(); j++ ) {
+                // se il tavolo è già prenotato lo elimino dalla lista
+                if(i == j)
+                    tavoli.remove(i);
+            }
+        }
+        // il/i tavolo/i rimasti sono quelli disponibili in quella data, prendo il primo
+        if(tavoli.isEmpty())
+            return 0;
+        return tavoli.get(0).getTableNum();
+
+    }
 
     @Override
     public void createT() {
@@ -105,7 +130,7 @@ public class TableCRUD implements Operation<Table> {
     }
 
     @Override
-    public List<Table> select() {
+    public List<Table> select(int capacity) {
         List<Table> tavoli = new ArrayList<>();
         int nTavolo;
 
