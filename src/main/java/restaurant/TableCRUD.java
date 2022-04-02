@@ -25,7 +25,7 @@ public class TableCRUD implements Operation<Table> {
             "  `capacity` INTEGER NOT NULL,\n" +
             "  PRIMARY KEY `tableNum`);";
     public static final String TABLE_INSERT = "INSERT INTO `EXAMPLE`.`table` (`tableNum`, `capacity`) VALUES (?, ?)";
-    public static final String TABLE_SELECT = "SELECT * FROM `EXAMPLE`.`table` WHERE `tableNum` = ?";
+    public static final String TABLE_SELECT = "SELECT * FROM `EXAMPLE`.`table` WHERE `tableNum` >= ?";
     public static final String TABLE_UPDATE = "UPDATE `EXAMPLE`.`table`\n" +
             "SET `capacity` = ? WHERE `tableNum` = ?";
     public static final String TABLE_DELETE = "";
@@ -46,7 +46,8 @@ public class TableCRUD implements Operation<Table> {
 
 
     @Override
-    public void insert() {
+    public boolean insert(Table table) {
+        int result = 0;
         try {
             c = ConnectDB.connect();
             ps = c.prepareStatement(TABLE_INSERT);
@@ -56,20 +57,21 @@ public class TableCRUD implements Operation<Table> {
         }
 
         try {
-            System.out.println("Inserici numero tavolo: ");
-            nTavolo = in.nextInt();
-            System.out.println("Inserici numero posti tavolo: ");
-            capacità = in.nextInt();
 
-            ps.setInt(1, nTavolo );
-            ps.setInt(2, capacità );
+            ps.setInt(1, table.getTableNum() );
+            ps.setInt(2, table.getCapacity());
 
-            ps.executeUpdate();
+            result = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        close();
 
-       close();
+        if(result != 0)
+            return true;
+        return false;
+
+
     }
 
     @Override

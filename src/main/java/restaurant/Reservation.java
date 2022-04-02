@@ -3,7 +3,7 @@ package restaurant;
 import lombok.*;
 import java.sql.Date;
 
-@Data @Builder
+@Data @Builder @AllArgsConstructor
 public class Reservation {
 
     @Getter @Setter

@@ -45,9 +45,9 @@ public class ReservationCRUD implements Operation<Reservation>{
     }
 
     @Override
-    public void insert() {
+    public boolean insert(Reservation reservation) {
         String nTel, data;
-        int persone;
+        int persone, result = 0;
 
         try {
             c = ConnectDB.connect();
@@ -56,24 +56,21 @@ public class ReservationCRUD implements Operation<Reservation>{
             e.printStackTrace();
         }
         try {
-            System.out.println("Cognome prenotazione: ");
-            cognome = in.next();
-            System.out.println("Inserici data prenotazione: ");
-            data = in.next();
-            System.out.println("Numero persone: ");
-            persone = in.nextInt();
-            System.out.println("Numero di telefono: ");
-            nTel = in.next();
-            ps.setString(1,cognome );
-            ps.setDate(2, Date.valueOf(data));
-            ps.setInt(3,persone);
-            ps.setString(4, nTel );
 
-            ps.executeUpdate();
+            ps.setString(1, reservation.getLastname());
+            ps.setDate(2, reservation.getDate());
+            ps.setInt(3,reservation.getNPeople());
+            ps.setString(4, reservation.getTNumber() );
+
+            result = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         close();
+
+        if(result != 0)
+            return true;
+        return false;
     }
 
     @Override
