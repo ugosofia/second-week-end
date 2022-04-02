@@ -48,7 +48,7 @@ public class TableCRUD implements Operation<Table> {
 
         try {
             ps.setInt(1,1 );
-            ps.setInt(1,5 );
+            ps.setInt(2,5 );
 
             ps.executeUpdate();
         } catch (SQLException e) {

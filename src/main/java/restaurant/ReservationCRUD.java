@@ -4,10 +4,7 @@ import utils.ConnectDB;
 import utils.Logger;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class ReservationCRUD implements Operation<Reservation>{
 
@@ -25,7 +22,14 @@ public class ReservationCRUD implements Operation<Reservation>{
 
     @Override
     public void createT() {
-
+        try{
+            c = ConnectDB.connect();
+            ps = c.prepareStatement(RESERVATION_CREATE);
+            ps.executeUpdate();
+            close();
+        } catch (SQLException | IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -37,8 +41,10 @@ public class ReservationCRUD implements Operation<Reservation>{
             e.printStackTrace();
         }
         try {
-            ps.setInt(1,1 );
-            ps.setInt(1,5 );
+            ps.setString(1,"Sofia" );
+            ps.setDate(2, Date.valueOf("15/04/2022"));
+            ps.setInt(3,5 );
+            ps.setString(4, "3205554199" );
 
             ps.executeUpdate();
         } catch (SQLException e) {
