@@ -1,16 +1,16 @@
 package restaurant;
 
-import java.sql.Connection;
+import lombok.*;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
+@Data @Builder
 public class Reservation {
 
-    private String lastname;
-    private Date date;
-    private int nPeople;
-    private long tNumber;
+    @Getter @Setter
+     private String lastname;
+     private Date date;
+     private int nPeople;
+     private String tNumber;
 
 
 }
