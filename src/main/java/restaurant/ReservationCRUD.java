@@ -17,9 +17,9 @@ public class ReservationCRUD implements Operation<Reservation>{
     Logger L = Logger.getInstance();
     Scanner in = new Scanner(System.in);
 
-    public static final String RESERVATION_CREATE = "CREATE TABLE `EXAMPLE`.`reservation` (\n" +
+    public static final String RESERVATION_CREATE = "CREATE TABLE IF NOT EXISTS `EXAMPLE`.`reservation` (\n" +
             "  `lastname` VARCHAR(30) NOT NULL,\n" +
-            "  `date` DATE NOT NULL,\n" +
+            "  `date` VARCHAR(30) NOT NULL,\n" +
             "  `nPeople` INT NOT NULL,\n" +
             "  `tNumber` VARCHAR(10) NOT NULL,\n" +
             "  PRIMARY KEY (`lastname`, `date`));";
@@ -30,9 +30,8 @@ public class ReservationCRUD implements Operation<Reservation>{
     public static final String RESERVATION_UPDATE = "UPDATE `EXAMPLE`.`reservation` SET `nPeople` = ? , `tNumber` = ? WHERE `lastname` = ? AND `date` = ? ;";
     public static final String RESERVATION_DELETE = "DELETE FROM `EXAMPLE`.`reservation` WHERE (`lastname` = ?) and (`date` = ?);";
     private String cognome, data;
-    private int numeroPersone, tNum;
 
-    public boolean richiestaPrenotazione(String cognome, Date data, int
+    public boolean richiestaPrenotazione(String cognome, String data, int
             numeroPersone, String cellulare) {
 
         TableCRUD t = new TableCRUD();
@@ -85,7 +84,7 @@ public class ReservationCRUD implements Operation<Reservation>{
         try {
 
             ps.setString(1, reservation.getLastname());
-            ps.setDate(2, reservation.getDate());
+            ps.setString(2, reservation.getDate());
             ps.setInt(3,reservation.getNPeople());
             ps.setString(4, reservation.getTNumber() );
 
@@ -116,14 +115,14 @@ public class ReservationCRUD implements Operation<Reservation>{
            System.out.print("\nInserisci data: ");
            data = in.next();
            System.out.print("\nInserisci numero persone: ");
-           numeroPersone = in.nextInt();
+            int numeroPersone = in.nextInt();
            System.out.print("\nInserisci cellulare: ");
-           tNum = in.nextInt();
+            int tNum = in.nextInt();
 
            ps.setInt(1, numeroPersone);
            ps.setInt(2, tNum);
            ps.setString(3, cognome);
-           ps.setDate(4, Date.valueOf(data));
+           ps.setString(4, data);
 
            ps.executeUpdate();
        } catch (SQLException e) {
@@ -143,7 +142,7 @@ public class ReservationCRUD implements Operation<Reservation>{
             ps = c.prepareStatement(RESERVATION_DELETE);
 
             ps.setString(1, object.getLastname());
-            ps.setDate(2, object.getDate());
+            ps.setString(2, object.getDate());
             rs = ps.executeQuery() ;
         } catch (SQLException | ClassNotFoundException | IOException e) {
             e.printStackTrace();
@@ -173,15 +172,18 @@ public class ReservationCRUD implements Operation<Reservation>{
             e.printStackTrace();
         }
         try {
-
-            ps.setString(1, r.getLastname() );
-            ps.setDate(2, r.getDate() );
+            System.out.println("Inserisci il cognome: ");
+            cognome = in.next();
+            System.out.println("Inserisci la data: (yyyy-mm-dd) ");
+            data = in.next();
+            ps.setString(1, cognome);
+            ps.setString(2, data );
 
             rs = ps.executeQuery();
             prenotazioni = List.of(
                     Reservation.builder()
                             .lastname(rs.getString("lastname"))
-                            .date(rs.getDate("date"))
+                            .date(rs.getString("date"))
                             .nPeople(rs.getInt("personID"))
                             .tNumber(rs.getString("tNumber"))
                             .build());
@@ -198,6 +200,7 @@ public class ReservationCRUD implements Operation<Reservation>{
         try{
             c.close();
             ps.close();
+            if(rs != null)
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();

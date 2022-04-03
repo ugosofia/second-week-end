@@ -13,13 +13,13 @@ public class ReservedTables {
 
     @Getter
     @Setter
-    Date data;
+    String data;
     int tableNum;
 
     public static final String CREATE = "CREATE TABLE `EXAMPLE`.`reserved` (\n" +
             "  `lastname` VARCHAR(30),\n" +
-            "  `date` DATE ,\n" +
-            "  `tableNum` INTEGER L,\n" +
+            "  `date` VARCHAR(30),\n" +
+            "  `tableNum` INTEGER,\n" +
             "  PRIMARY KEY (`lastname`, `date`,`tableNum`), \n" +
             "FOREIGN KEY (`lastname`,`date`) REFERENCES reservation(`lastname`,`date`) ON DELETE CASCADE ON UPDATE CASCADE , \n" +
             "FOREIGN KEY (`tableNum`) REFERENCES table(`tableNum`) ON DELETE CASCADE );";
@@ -43,14 +43,14 @@ public class ReservedTables {
         }
     }
 
-    public List<Integer> select(Date d) {
+    public List<Integer> select(String d) {
         List<Integer> tavoli = new ArrayList<>();
 
         try {
             Connection c = ConnectDB.connect();
             PreparedStatement ps = c.prepareStatement(SELECT);
 
-            ps.setDate(1, d);
+            ps.setString(1, d);
 
             ResultSet rs = ps.executeQuery();
 
@@ -75,7 +75,7 @@ public class ReservedTables {
         }
 
         try {
-            ps.setDate(1, reservedTables.getData());
+            ps.setString(1, reservedTables.getData());
             ps.setInt(2, reservedTables.getTableNum() );
 
             ps.executeUpdate();
