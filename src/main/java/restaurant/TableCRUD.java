@@ -18,10 +18,9 @@ public class TableCRUD implements Operation<Table> {
     //Logger L = Logger.getInstance();
     Scanner in = new Scanner(System.in);
 
-    public static final String TABLE_CREATE = "CREATE TABLE `EXAMPLE`.`table` (\n" +
-            "  `tableNum` INTEGER NOT NULL,\n" +
-            "  `capacity` INTEGER NOT NULL,\n" +
-            "  PRIMARY KEY `tableNum`);";
+    public static final String TABLE_CREATE = "CREATE TABLE IF NOT EXISTS `EXAMPLE`.`table` (\n" +
+            "  `tableNum` INTEGER PRIMARY KEY ,\n" +
+            "  `capacity` INTEGER NOT NULL);";
     public static final String TABLE_INSERT = "INSERT INTO `EXAMPLE`.`table` (`tableNum`, `capacity`) VALUES (?, ?)";
     public static final String TABLE_SELECT = "SELECT * FROM `EXAMPLE`.`table` WHERE `capacity` >= ?";
     public static final String TABLE_SELECT2 = "SELECT * FROM `EXAMPLE`.`table` WHERE = `tableNum` = ?";
@@ -31,9 +30,9 @@ public class TableCRUD implements Operation<Table> {
     private int nTavolo, capacità;
 
 
-    public int disponibilitàTavolo(Date data, int numeroPersone) {
+    public int disponibilitàTavolo(String data, int numeroPersone) {
      //   con il numero di persone, vado a prendere i numeri di tavoli con quella capienza
-
+        t = new Table(0, numeroPersone);
         List<Table> tavoli = select(t);
         if(tavoli.isEmpty())
             return 0;
@@ -99,9 +98,7 @@ public class TableCRUD implements Operation<Table> {
         }
         close();
 
-        if(result != 0)
-            return true;
-        return false;
+        return result != 0;
 
 
     }
@@ -162,7 +159,7 @@ public class TableCRUD implements Operation<Table> {
     }
 
     @Override
-    public List<Table> select(Table object) {
+    public List<Table> select(Table t) {
         List<Table> tavoli = new ArrayList<>();
         int nTavolo;
 
@@ -177,7 +174,7 @@ public class TableCRUD implements Operation<Table> {
 
         try {
 
-            ps.setInt(1, object.getTableNum());
+            ps.setInt(1, t.getCapacity());
 
             rs = ps.executeQuery();
             tavoli = List.of(
@@ -198,6 +195,7 @@ public class TableCRUD implements Operation<Table> {
         try{
             c.close();
             ps.close();
+            if(rs != null)
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
