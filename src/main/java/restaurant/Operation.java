@@ -6,9 +6,9 @@ public interface Operation<K> {
 
     public void createT();
     public boolean insert(K object);
-    public void update(K object);
-    public void delete(K object);
-    public List<K> select(int object);
+    public void update();
+    public boolean delete(K object);
+    public List<K> select(K object);
     public void close();
 
 }

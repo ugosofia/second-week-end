@@ -17,9 +17,13 @@ public class ReservedTables {
     int tableNum;
 
     public static final String CREATE = "CREATE TABLE `EXAMPLE`.`reserved` (\n" +
+            "  `lastname` VARCHAR(30),\n" +
             "  `date` DATE ,\n" +
             "  `tableNum` INTEGER L,\n" +
-            "  PRIMARY KEY (`date`,`tableNum`));";
+            "  PRIMARY KEY (`lastname`, `date`,`tableNum`), \n" +
+            "FOREIGN KEY (`lastname`,`date`) REFERENCES reservation(`lastname`,`date`) ON DELETE CASCADE ON UPDATE CASCADE , \n" +
+            "FOREIGN KEY (`tableNum`) REFERENCES table(`tableNum`) ON DELETE CASCADE );";
+
     public static final String SELECT = "SELECT tableNum FROM reserved WHERE data <> ?";
     public static final String INSERT = "INSERT INTO `EXAMPLE`.`reserved` (`date`, `tableNum`) VALUES (?, ?)";
 

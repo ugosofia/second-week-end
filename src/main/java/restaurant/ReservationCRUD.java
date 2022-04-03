@@ -24,13 +24,13 @@ public class ReservationCRUD implements Operation<Reservation>{
             "  `tNumber` VARCHAR(10) NOT NULL,\n" +
             "  PRIMARY KEY (`lastname`, `date`));";
 
-    public static final String RESERVATION_INSERT = "INSERT INTO reservation (lastname, date , nPeople, tNumber) VALUES (?, ?, ?, ?)";
+    public static final String RESERVATION_INSERT = "INSERT INTO `EXAMPLE`.`reservation` (`lastname`, `date` , `nPeople`, `tNumber`) VALUES (?, ?, ?, ?)";
 
-    public static final String RESERVATION_SELECT = "SELECT * FROM reservation WHERE lastname = ?";
-    public static final String RESERVATION_UPDATE = "";
-    public static final String RESERVATION_DELETE = "";
-    private String cognome;
-
+    public static final String RESERVATION_SELECT = "SELECT * FROM `EXAMPLE`.`reservation` WHERE `lastname` = ? AND `date` = ?";
+    public static final String RESERVATION_UPDATE = "UPDATE `EXAMPLE`.`reservation` SET `nPeople` = ? , `tNumber` = ? WHERE `lastname` = ? AND `date` = ? ;";
+    public static final String RESERVATION_DELETE = "DELETE FROM `EXAMPLE`.`reservation` WHERE (`lastname` = ?) and (`date` = ?);";
+    private String cognome, data;
+    private int numeroPersone, tNum;
 
     public boolean richiestaPrenotazione(String cognome, Date data, int
             numeroPersone, String cellulare) {
@@ -103,17 +103,66 @@ public class ReservationCRUD implements Operation<Reservation>{
     }
 
     @Override
-    public void update(Reservation object) {
+    public void update() {
+       try {
+           c = ConnectDB.connect();
+           ps = c.prepareStatement(RESERVATION_UPDATE);
+       } catch (SQLException | IOException | ClassNotFoundException e) {
+           e.printStackTrace();
+       }
+        try {
+           System.out.print("\nInserisci cognome: ");
+           cognome = in.next();
+           System.out.print("\nInserisci data: ");
+           data = in.next();
+           System.out.print("\nInserisci numero persone: ");
+           numeroPersone = in.nextInt();
+           System.out.print("\nInserisci cellulare: ");
+           tNum = in.nextInt();
 
+           ps.setInt(1, numeroPersone);
+           ps.setInt(2, tNum);
+           ps.setString(3, cognome);
+           ps.setDate(4, Date.valueOf(data));
+
+           ps.executeUpdate();
+       } catch (SQLException e) {
+           e.printStackTrace();
+       }
+        close();
     }
 
     @Override
-    public void delete(Reservation object) {
+    public boolean delete(Reservation object) {
+        if (object == null) {
+            throw new IllegalArgumentException(
+                    "La prenotazione passata come parametro è null");
+        }
+        try {
+            c = ConnectDB.connect();
+            ps = c.prepareStatement(RESERVATION_DELETE);
 
+            ps.setString(1, object.getLastname());
+            ps.setDate(2, object.getDate());
+            rs = ps.executeQuery() ;
+        } catch (SQLException | ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (!rs.next()) {
+                close();
+                return false;
+            }
+            close();
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return true;
     }
 
     @Override
-    public List<Reservation> select(int x) {
+    public List<Reservation> select(Reservation r) {
         List<Reservation> prenotazioni = new ArrayList<>();
         try {
             c = ConnectDB.connect();
@@ -124,9 +173,9 @@ public class ReservationCRUD implements Operation<Reservation>{
             e.printStackTrace();
         }
         try {
-            System.out.println("Cognome prenotazione: ");
-            cognome = in.next();
-            ps.setString(1, cognome );
+
+            ps.setString(1, r.getLastname() );
+            ps.setDate(2, r.getDate() );
 
             rs = ps.executeQuery();
             prenotazioni = List.of(
