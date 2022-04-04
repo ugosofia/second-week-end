@@ -10,7 +10,7 @@ import java.sql.*;
 
 public class Tester {
     public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
-
+/**
         Table t1 = new Table(1,3);
         Table t2 = new Table(2,2);
         Table t3 = new Table(3,5);
@@ -31,12 +31,12 @@ public class Tester {
         reservationCRUD.insert(r1);
         reservationCRUD.insert(r2);
         reservationCRUD.insert(r3);
-
+*/
         printFile();
     }
 
     public static void printFile() {
-        String query = "SELECT * FROM Prenotazione";
+        String query = "SELECT * FROM `EXAMPLE`.`reservation`";
         Connection conn = null;
         Statement s;
         ResultSet rs;
@@ -47,7 +47,7 @@ public class Tester {
 
         try {
             outputStream = new PrintWriter("prenotazioni.txt");
-            outputStream.println(String.format("LASTNAME", "DATE", "PEOPLE NUMBER", "PHONE NUMBER", "TABLE NUMBER"));
+            outputStream.println(String.format("LASTNAME", "DATE", "PEOPLE NUMBER", "PHONE NUMBER"));
 
             conn = ConnectDB.connect();
             s = conn.createStatement();
@@ -58,8 +58,8 @@ public class Tester {
                 date = rs.getString(2);
                 peopleNum = rs.getString(3);
                 phone = rs.getString(4);
-                tableNum = rs.getInt(5);
-                outputStream.println(String.format( lastname, date, peopleNum, phone, tableNum));
+              
+                outputStream.println(String.format( lastname, date, peopleNum, phone));
             }
         } catch (SQLException | IOException | ClassNotFoundException e) {
             e.printStackTrace();

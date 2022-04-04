@@ -65,13 +65,6 @@ public class ReservationCRUD implements Operation<Reservation>{
     @Override
     public boolean insert(Reservation reservation) {
 
-        if(!(richiestaPrenotazione(reservation.getLastname(),
-                reservation.getDate(),reservation.getNPeople(),
-                reservation.getTNumber()))) {
-            L.err("ERRORE, non è possibile eseguire l'inserimento");
-            return false;
-        }
-
         String nTel, data;
         int persone, result = 0;
 
