@@ -58,7 +58,7 @@ public class Tester {
                 date = rs.getString(2);
                 peopleNum = rs.getString(3);
                 phone = rs.getString(4);
-              
+
                 outputStream.println(String.format( lastname, date, peopleNum, phone));
             }
         } catch (SQLException | IOException | ClassNotFoundException e) {
